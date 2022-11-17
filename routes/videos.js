@@ -17,13 +17,16 @@ const { getNewId, writeJSONFile } = require("../helper/helper");
  * POST /videos
  */
 
+// Map and replace proper image urls
+const videosWithUpdatedImages = videos.map((video) => {
+  return { ...video, image: `http://localhost:8080/${video.image}` };
+});
+
 // GET /videos route that responds with an array of videos
 router.get("/", (_req, res) => {
   // return all videos
   try {
-    res
-      .status(200)
-      .json({ ...videos, image: `http://localhost:8080/${videos.image}` }); // used to just be videos
+    res.status(200).json(videosWithUpdatedImages);
   } catch (error) {
     console.log("Error retrieving the videos", error);
   }
@@ -35,7 +38,12 @@ router.get("/:id", (req, res) => {
   try {
     const found = videos.find((video) => video.id === req.params.id);
     if (found) {
-      res.status(200).json(found);
+      const updatedLink = {
+        ...found,
+        // image: `http://localhost:8080/${image}`,
+        image: `http://localhost:8080/${found.image}`,
+      };
+      res.status(200).json(updatedLink);
     } else {
       res
         .status(404)
@@ -63,7 +71,7 @@ router.post("/", (req, res) => {
     id: getNewId(),
     title,
     channel,
-    image: "images/Upload-video-preview.jpg", // all uses the same image
+    image: "/images/Upload-video-preview.jpg", // all uses the same image
     // description, // lorem ipsum
     views: 0,
     likes: 0,
