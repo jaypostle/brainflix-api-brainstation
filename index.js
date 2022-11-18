@@ -2,10 +2,13 @@
 require("dotenv").config();
 
 const express = require("express");
+
+const cors = require("cors");
 const path = require("node:path");
 
 // initialize express server instance
 const app = express();
+app.use(cors());
 
 // const of routes
 const videoRouter = require("./routes/videos");
